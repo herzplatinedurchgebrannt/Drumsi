@@ -12,13 +12,23 @@ snare = pygame.mixer.Sound('snare.wav')
 hihat = pygame.mixer.Sound('hihatlong.wav')
 hihat.set_volume(0.4)
 
-pattern = [0,0,0,0,0,0,0,0]
+pattern =  [[0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0]]
+
+zaehler = 0
 
 bpm = 120
 
+#sequencerVariables
+isPlaying = True
+
+jo = True
 
 def calculateTiming(bpmIn):
-    tempoIn = 1/(bpmIn/60*1)
+    tempoIn = 1000/(bpmIn/60*1)
+    tempoIn = int(tempoIn)
     return tempoIn
 
 tempo = calculateTiming(bpm)
@@ -39,6 +49,9 @@ def callback1():
     print(B1.get())
 
 def changeTempo(event):
+    global tempo
+    global bpm 
+
     bpm = (Slider.get())
     tempo = calculateTiming(bpm)
     print(tempo)
@@ -47,7 +60,7 @@ def changeTempo(event):
 	
 Slider = Scale(topFrame, from_=60, to=200, resolution=5, orient=HORIZONTAL, length=400)
 Slider.set(bpm)
-Slider.grid(row=0, column=0, padx=10, pady=3)   
+Slider.grid(row=1, column=0, padx=10, pady=3)   
 Slider.bind('<ButtonRelease-1>', changeTempo)
 
 styleButtonWidth = 1
@@ -58,15 +71,34 @@ styleButtonPadY = 3
 def say_hello(event):
     step = int(event.widget['text'])-1
     print(event.widget['text'])
-    
-    if pattern[step]==0:
-        pattern[step] = 1
+
+    if pattern[0][step]==0:
+        pattern[0][step] = 1
         event.widget['bg'] = "#990000"
     else:
-        pattern[step] = 0
+        pattern[0][step] = 0
         event.widget['bg'] = "#660033"
-
     print(pattern)
+
+def letsGo():
+    global isPlaying
+    global zaehler
+    global pattern
+    global tempo
+
+    stand = startButton.cget('text')
+    print(stand)
+    if stand == "lets go":
+        if pattern[0][zaehler] == 1:
+            kick.play()
+        root.after(tempo, letsGo)
+        zaehler = zaehler+1
+        if zaehler >= 8:
+            zaehler = 0
+        print(zaehler)
+    else:
+        print(jo)
+
 
 
 B1 = Button(buttonFrame, text="1", bg=styleButtonColor, width=styleButtonWidth)
@@ -101,6 +133,12 @@ B8 = Button(buttonFrame, text="8", bg=styleButtonColor, width=styleButtonWidth)
 B8.grid(row=0, column=7, padx=styleButtonPadX, pady=styleButtonPadY)
 B8.bind('<Button-1>', say_hello)
 
+
+
+startButton = Button(topFrame, text="lets go", bg="#FFFFFF", width=15, command=letsGo)
+startButton.grid(row=0, column=0)
+#startButton.bind('<Button-1>', letsGo)
+
 print(B1.cget('text'))
 
 
@@ -108,10 +146,10 @@ print(B1.cget('text'))
 # Reaktion auf das Programmende
 def win_close () :
     print("tschöööö")
-# Aufräumarbeiten ..
+    # Aufräumarbeiten ..
     root.quit()
 
-root.protocol ( "WM_DELETE_WINDOW" ,win_close)
+root.protocol("WM_DELETE_WINDOW",win_close)
 
 
 # Update der GUI
