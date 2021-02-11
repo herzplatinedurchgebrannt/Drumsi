@@ -13,7 +13,6 @@ hihat = pygame.mixer.Sound('hihatlong.wav')
 hihat.set_volume(0.4)
 
 
-
 counter = 1
 
 bpm = 120
