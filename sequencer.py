@@ -40,8 +40,15 @@ root.config(background = "#000000")
 topFrame = Frame(root, width=350, height=50)
 topFrame.grid(row=0, column=0, padx=3, pady=3)
 
+
+
 buttonFrame = Frame(root, width=600, height=50)
 buttonFrame.grid(row=1, column=0, padx=3, pady=3)
+
+#stepFrame = Frame(buttonFrame, width=600, height=50)
+#stepFrame.grid(row=0, column=0)
+
+
 
 def changeTempo(event):
     global tempo
@@ -63,36 +70,32 @@ styleButtonPadY = 3
 
 def noteOnOff(x):
     if x > 100 and x < 200:
-        if pattern[0][x-101]==0:
-            pattern[0][x-101] = 1
-            #event.widget['bg'] = "#990000"
-        else:
-            pattern[0][x-101] = 0
-            #event.widget['bg'] = "#660033"  
+        y = 0
+        z = x-101
+        theList = button_list_kick
     elif x > 200 and x < 300:
-        if pattern[1][x-201]==0:
-            pattern[1][x-201] = 1
-            #event.widget['bg'] = "#990000"
-        else:
-            pattern[1][x-201] = 0
-            #event.widget['bg'] = "#660033"
+        y = 1
+        z = x-201
+        theList = button_list_snare
     elif x > 300 and x < 400:
-        if pattern[2][x-301]==0:
-            pattern[2][x-301] = 1
-            #event.widget['bg'] = "#990000"
-        else:
-            pattern[2][x-301] = 0
-            #event.widget['bg'] = "#660033"
+        y = 2
+        z = x-301
+        theList = button_list_hihat
     elif x > 400 and x < 500:
-        if pattern[3][x-401]==0:
-            pattern[3][x-401] = 1
-            #event.widget['bg'] = "#990000"
-        else:
-            pattern[3][x-401] = 0
-            #event.widget['bg'] = "#660033"
+        y = 3
+        z = x-401
+        theList = button_list_crash
     else:
         print("falscher Wert")
-    print(pattern)
+
+    if pattern[y][z]==0:
+        pattern[y][z] = 1
+        theList[z].config(bg="blue")
+    else:
+        pattern[y][z] = 0
+        theList[z].config(bg="grey")
+
+    #print(pattern)
 
 
 def letsGo():
@@ -113,17 +116,24 @@ def letsGo():
 
         root.after(tempo, letsGo)
         zaehler = zaehler+1
-        if zaehler >= 8:
+        if zaehler >= 16:
             zaehler = 0
         print(zaehler)
     else:
         print(jo)
 
 
-
+def hello(event):
+    event.widget['bg'] = "#990000"
+    print()
 
 button_names = [1,2,3,4,5,6,7,8]
 button_list = [] # for later needs
+
+button_list_kick = [] 
+button_list_snare = [] 
+button_list_hihat = [] 
+button_list_crash = [] 
 
 # 16 buttons for 16 steps
 numberButtons = range(1,17)
@@ -131,24 +141,29 @@ numberButtons = range(1,17)
 for i in numberButtons:
     kickButton = Button(buttonFrame, text=i, command=lambda x=i:noteOnOff(x+100))
     kickButton.grid(row=1, column=i-1, padx=styleButtonPadX, pady=styleButtonPadY)
-    button_list.append(kickButton) 
+    button_list_kick.append(kickButton) 
 
 for i in numberButtons:
     snareButton = Button(buttonFrame, text=i, command=lambda x=i:noteOnOff(x+200))
     snareButton.grid(row=2, column=i-1, padx=styleButtonPadX, pady=styleButtonPadY)
-    button_list.append(snareButton) 
+    button_list_snare.append(snareButton) 
 
 for i in numberButtons:
     hihatButton = Button(buttonFrame, text=i, command=lambda x=i:noteOnOff(x+300))
     hihatButton.grid(row=3, column=i-1, padx=styleButtonPadX, pady=styleButtonPadY)
-    button_list.append(hihatButton) 
+    button_list_hihat.append(hihatButton) 
 
 for i in numberButtons:
     crashButton = Button(buttonFrame, text=i, command=lambda x=i:noteOnOff(x+400))
     crashButton.grid(row=4, column=i-1, padx=styleButtonPadX, pady=styleButtonPadY)
-    button_list.append(crashButton) 
+    button_list_crash.append(crashButton) 
 
-print(button_list)
+
+testButton = Button(buttonFrame, command=lambda x=i:noteOnOff(x+500))
+testButton.grid(row=5, column=0)
+testButton.bind('<Button-1>', hello)
+
+#print(button_list)
 
 def lable_name(name):
     label = Label(buttonFrame, text="HDD {} is added to the zpool".format(name))
