@@ -12,6 +12,7 @@ snare = pygame.mixer.Sound('snare.wav')
 hihat = pygame.mixer.Sound('hihatlong.wav')
 hihat.set_volume(0.4)
 
+#Init values
 pattern =  [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -19,11 +20,9 @@ pattern =  [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 
 zaehler = 0
 
-bpm = 120
-
 #sequencerVariables
 isPlaying = True
-
+bpm = 120
 
 
 def calculateTiming(bpmIn):
@@ -37,16 +36,13 @@ root = Tk()
 root.wm_title("Drumsi")
 root.config(background = "#000000")
 
+#Frames
 topFrame = Frame(root, width=350, height=50)
 topFrame.grid(row=0, column=0, padx=3, pady=3)
-
-
 
 buttonFrame = Frame(root, width=600, height=50)
 buttonFrame.grid(row=1, column=0, padx=3, pady=3)
 
-#stepFrame = Frame(buttonFrame, width=600, height=50)
-#stepFrame.grid(row=0, column=0)
 
 
 
@@ -95,7 +91,7 @@ def noteOnOff(x):
         pattern[y][z] = 0
         theList[z].config(bg="grey")
 
-    #print(pattern)
+
 
 
 def letsGo():
@@ -103,9 +99,9 @@ def letsGo():
     global zaehler
     global pattern
     global tempo
+    markStep(zaehler)
 
     stand = startButton.cget('text')
-    print(stand)
     if stand == "lets go":
         if pattern[0][zaehler] == 1:
             kick.play()
@@ -113,19 +109,35 @@ def letsGo():
             snare.play()           
         if pattern[2][zaehler] == 1:
             hihat.play()
-
         root.after(tempo, letsGo)
         zaehler = zaehler+1
         if zaehler >= 16:
             zaehler = 0
-        print(zaehler)
     else:
-        print(jo)
+        print()
+
+def markStep(currentStep):
+    #for t in label_list_step:
+     #   print(t)
+    label_list_step[currentStep].config(bg="red")
+    label_list_step[currentStep-1].config(bg="gray")
+
+    
 
 
 def hello(event):
     event.widget['bg'] = "#990000"
-    print()
+
+# 16 buttons for 16 steps
+numberButtons = range(1,17)
+
+label_list_step = []
+
+for i in numberButtons:
+    stepLabel = Label(buttonFrame, text=i, bg="gray", width=3)
+    stepLabel.grid(row=0, column=i-1)
+    label_list_step.append(stepLabel)
+
 
 button_names = [1,2,3,4,5,6,7,8]
 button_list = [] # for later needs
@@ -135,33 +147,32 @@ button_list_snare = []
 button_list_hihat = [] 
 button_list_crash = [] 
 
-# 16 buttons for 16 steps
-numberButtons = range(1,17)
+
 
 for i in numberButtons:
-    kickButton = Button(buttonFrame, text=i, command=lambda x=i:noteOnOff(x+100))
+    kickButton = Button(buttonFrame, text="", command=lambda x=i:noteOnOff(x+100))
     kickButton.grid(row=1, column=i-1, padx=styleButtonPadX, pady=styleButtonPadY)
     button_list_kick.append(kickButton) 
 
 for i in numberButtons:
-    snareButton = Button(buttonFrame, text=i, command=lambda x=i:noteOnOff(x+200))
+    snareButton = Button(buttonFrame, text="", command=lambda x=i:noteOnOff(x+200))
     snareButton.grid(row=2, column=i-1, padx=styleButtonPadX, pady=styleButtonPadY)
     button_list_snare.append(snareButton) 
 
 for i in numberButtons:
-    hihatButton = Button(buttonFrame, text=i, command=lambda x=i:noteOnOff(x+300))
+    hihatButton = Button(buttonFrame, text="", command=lambda x=i:noteOnOff(x+300))
     hihatButton.grid(row=3, column=i-1, padx=styleButtonPadX, pady=styleButtonPadY)
     button_list_hihat.append(hihatButton) 
 
 for i in numberButtons:
-    crashButton = Button(buttonFrame, text=i, command=lambda x=i:noteOnOff(x+400))
+    crashButton = Button(buttonFrame, text="", command=lambda x=i:noteOnOff(x+400))
     crashButton.grid(row=4, column=i-1, padx=styleButtonPadX, pady=styleButtonPadY)
     button_list_crash.append(crashButton) 
 
-
+"""
 testButton = Button(buttonFrame, command=lambda x=i:noteOnOff(x+500))
 testButton.grid(row=5, column=0)
-testButton.bind('<Button-1>', hello)
+testButton.bind('<Button-1>', hello)"""
 
 #print(button_list)
 
