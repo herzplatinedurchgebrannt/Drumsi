@@ -3,7 +3,6 @@
 import time
 import pygame 
 from tkinter import *
-#pushtest
 
 pygame.init()
 
@@ -21,7 +20,7 @@ pattern =  [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 zaehler = 0
 
 #sequencerVariables
-isPlaying = True
+isPlaying = TRUE
 bpm = 120
 
 
@@ -52,7 +51,7 @@ def changeTempo(event):
 
     bpm = (Slider.get())
     tempo = calculateTiming(bpm)
-    print(tempo)
+
 	
 Slider = Scale(topFrame, from_=60, to=200, resolution=5, orient=HORIZONTAL, length=400)
 Slider.set(bpm)
@@ -102,7 +101,8 @@ def letsGo():
     markStep(zaehler)
 
     stand = startButton.cget('text')
-    if stand == "lets go":
+
+    if isPlaying == TRUE:
         if pattern[0][zaehler] == 1:
             kick.play()
         if pattern[1][zaehler] == 1:
@@ -114,13 +114,30 @@ def letsGo():
         if zaehler >= 16:
             zaehler = 0
     else:
-        print()
+        isPlaying = TRUE
+
+def stopSequencer():
+    global isPlaying
+    global zaehler
+    if isPlaying == FALSE:
+        isPlaying = TRUE
+    elif isPlaying == TRUE:
+        isPlaying = FALSE
+        unMarkStep(zaehler)
+        zaehler = 0
+        
+
+    
 
 def markStep(currentStep):
-    #for t in label_list_step:
-     #   print(t)
-    label_list_step[currentStep].config(bg="red")
+    global isPlaying
+    if isPlaying == TRUE:
+        label_list_step[currentStep].config(bg="red")
+        label_list_step[currentStep-1].config(bg="gray")
+
+def unMarkStep(currentStep):
     label_list_step[currentStep-1].config(bg="gray")
+    print(currentStep)
 
     
 
@@ -128,18 +145,19 @@ def markStep(currentStep):
 def hello(event):
     event.widget['bg'] = "#990000"
 
+
 # 16 buttons for 16 steps
 numberButtons = range(1,17)
 
 label_list_step = []
 
+# creating labels
 for i in numberButtons:
     stepLabel = Label(buttonFrame, text=i, bg="gray", width=3)
     stepLabel.grid(row=0, column=i-1)
     label_list_step.append(stepLabel)
 
-
-button_names = [1,2,3,4,5,6,7,8]
+#button_names = [1,2,3,4,5,6,7,8]
 button_list = [] # for later needs
 
 button_list_kick = [] 
@@ -148,7 +166,7 @@ button_list_hihat = []
 button_list_crash = [] 
 
 
-
+# creating buttons
 for i in numberButtons:
     kickButton = Button(buttonFrame, text="", command=lambda x=i:noteOnOff(x+100))
     kickButton.grid(row=1, column=i-1, padx=styleButtonPadX, pady=styleButtonPadY)
@@ -184,120 +202,12 @@ def sendNote(receivedNote):
     print("hi",receivedNote)
 
 
-
-
-
-
-
-
-"""
-Kick_B1 = Button(buttonFrame, text="1", bg=styleButtonColor, width=styleButtonWidth, command= lambda: say_hi("fuck"))
-Kick_B1.grid(row=0, column=0, padx=styleButtonPadX, pady=styleButtonPadY)
-#Kick_B1.bind('<Button-1>', noteOnOff)
-
-Kick_B2 = Button(buttonFrame, text="2", bg=styleButtonColor, width=styleButtonWidth)
-Kick_B2.grid(row=0, column=1, padx=styleButtonPadX, pady=styleButtonPadY)
-Kick_B2.bind('<Button-1>', noteOnOff)
-
-Kick_B3 = Button(buttonFrame, text="3", bg=styleButtonColor, width=styleButtonWidth)
-Kick_B3.grid(row=0, column=2, padx=styleButtonPadX, pady=styleButtonPadY)
-Kick_B3.bind('<Button-1>', noteOnOff)
-
-Kick_B4 = Button(buttonFrame, text="4", bg=styleButtonColor, width=styleButtonWidth)
-Kick_B4.grid(row=0, column=3, padx=styleButtonPadX, pady=styleButtonPadY)
-Kick_B4.bind('<Button-1>', noteOnOff)
-
-Kick_B5 = Button(buttonFrame, text="5", bg=styleButtonColor, width=styleButtonWidth)
-Kick_B5.grid(row=0, column=4, padx=styleButtonPadX, pady=styleButtonPadY)
-Kick_B5.bind('<Button-1>', noteOnOff)
-
-Kick_B6 = Button(buttonFrame, text="6", bg=styleButtonColor, width=styleButtonWidth)
-Kick_B6.grid(row=0, column=5, padx=styleButtonPadX, pady=styleButtonPadY)
-Kick_B6.bind('<Button-1>', noteOnOff)
-
-Kick_B7 = Button(buttonFrame, text="7", bg=styleButtonColor, width=styleButtonWidth)
-Kick_B7.grid(row=0, column=6, padx=styleButtonPadX, pady=styleButtonPadY)
-Kick_B7.bind('<Button-1>', noteOnOff)
-
-Kick_B8 = Button(buttonFrame, text="8", bg=styleButtonColor, width=styleButtonWidth)
-Kick_B8.grid(row=0, column=7, padx=styleButtonPadX, pady=styleButtonPadY)
-Kick_B8.bind('<Button-1>', noteOnOff)
-
-
-Snare_B1 = Button(buttonFrame, text="1", bg=styleButtonColor, width=styleButtonWidth)
-Snare_B1.grid(row=1, column=0, padx=styleButtonPadX, pady=styleButtonPadY)
-Snare_B1.bind('<Button-1>', noteOnOff)
-
-Snare_B2 = Button(buttonFrame, text="2", bg=styleButtonColor, width=styleButtonWidth)
-Snare_B2.grid(row=1, column=1, padx=styleButtonPadX, pady=styleButtonPadY)
-Snare_B2.bind('<Button-1>', noteOnOff)
-
-Snare_B3 = Button(buttonFrame, text="3", bg=styleButtonColor, width=styleButtonWidth)
-Snare_B3.grid(row=1, column=2, padx=styleButtonPadX, pady=styleButtonPadY)
-Snare_B3.bind('<Button-1>', noteOnOff)
-
-Snare_B4 = Button(buttonFrame, text="4", bg=styleButtonColor, width=styleButtonWidth)
-Snare_B4.grid(row=1, column=3, padx=styleButtonPadX, pady=styleButtonPadY)
-Snare_B4.bind('<Button-1>', noteOnOff)
-
-Snare_B5 = Button(buttonFrame, text="5", bg=styleButtonColor, width=styleButtonWidth)
-Snare_B5.grid(row=1, column=4, padx=styleButtonPadX, pady=styleButtonPadY)
-Snare_B5.bind('<Button-1>', noteOnOff)
-
-Snare_B6 = Button(buttonFrame, text="6", bg=styleButtonColor, width=styleButtonWidth)
-Snare_B6.grid(row=1, column=5, padx=styleButtonPadX, pady=styleButtonPadY)
-Snare_B6.bind('<Button-1>', noteOnOff)
-
-Snare_B7 = Button(buttonFrame, text="7", bg=styleButtonColor, width=styleButtonWidth)
-Snare_B7.grid(row=1, column=6, padx=styleButtonPadX, pady=styleButtonPadY)
-Snare_B7.bind('<Button-1>', noteOnOff)
-
-Snare_B8 = Button(buttonFrame, text="8", bg=styleButtonColor, width=styleButtonWidth)
-Snare_B8.grid(row=1, column=7, padx=styleButtonPadX, pady=styleButtonPadY)
-Snare_B8.bind('<Button-1>', noteOnOff)
-
-
-HiHat_B1 = Button(buttonFrame, text="1", bg=styleButtonColor, width=styleButtonWidth)
-HiHat_B1.grid(row=2, column=0, padx=styleButtonPadX, pady=styleButtonPadY)
-HiHat_B1.bind('<Button-1>', noteOnOff)
-
-HiHat_B2 = Button(buttonFrame, text="2", bg=styleButtonColor, width=styleButtonWidth)
-HiHat_B2.grid(row=2, column=1, padx=styleButtonPadX, pady=styleButtonPadY)
-HiHat_B2.bind('<Button-1>', noteOnOff)
-
-HiHat_B3 = Button(buttonFrame, text="3", bg=styleButtonColor, width=styleButtonWidth)
-HiHat_B3.grid(row=2, column=2, padx=styleButtonPadX, pady=styleButtonPadY)
-HiHat_B3.bind('<Button-1>', noteOnOff)
-
-HiHat_B4 = Button(buttonFrame, text="4", bg=styleButtonColor, width=styleButtonWidth)
-HiHat_B4.grid(row=2, column=3, padx=styleButtonPadX, pady=styleButtonPadY)
-HiHat_B4.bind('<Button-1>', noteOnOff)
-
-HiHat_B5 = Button(buttonFrame, text="5", bg=styleButtonColor, width=styleButtonWidth)
-HiHat_B5.grid(row=2, column=4, padx=styleButtonPadX, pady=styleButtonPadY)
-HiHat_B5.bind('<Button-1>', noteOnOff)
-
-HiHat_B6 = Button(buttonFrame, text="6", bg=styleButtonColor, width=styleButtonWidth)
-HiHat_B6.grid(row=2, column=5, padx=styleButtonPadX, pady=styleButtonPadY)
-HiHat_B6.bind('<Button-1>', noteOnOff)
-
-HiHat_B7 = Button(buttonFrame, text="7", bg=styleButtonColor, width=styleButtonWidth)
-HiHat_B7.grid(row=2, column=6, padx=styleButtonPadX, pady=styleButtonPadY)
-HiHat_B7.bind('<Button-1>', noteOnOff)
-
-HiHat_B8 = Button(buttonFrame, text="8", bg=styleButtonColor, width=styleButtonWidth)
-HiHat_B8.grid(row=2, column=7, padx=styleButtonPadX, pady=styleButtonPadY)
-HiHat_B8.bind('<Button-1>', noteOnOff)
-"""
-
-
-
-startButton = Button(topFrame, text="lets go", bg="#FFFFFF", width=15, command=letsGo)
+startButton = Button(topFrame, text="Play", bg="#FFFFFF", width=10, command=letsGo)
 startButton.grid(row=0, column=0)
 #startButton.bind('<Button-1>', letsGo)
 
-
-
+stopButton = Button(topFrame, text="Stop", bg="#FFFFFF", width=10, command=stopSequencer)
+stopButton.grid(row=1, column=0)
 
 
 # Reaktion auf das Programmende
