@@ -7,9 +7,14 @@ from tkinter import *
 pygame.init()
 
 kick = pygame.mixer.Sound('kick.wav')
+
 snare = pygame.mixer.Sound('snare.wav')
+
 hihat = pygame.mixer.Sound('hihatlong.wav')
 hihat.set_volume(0.4)
+
+crash = pygame.mixer.Sound('crash.ogg')
+crash.set_volume(0.5)
 
 #Init values
 pattern =  [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -33,16 +38,35 @@ tempo = calculateTiming(bpm)
 
 root = Tk()
 root.wm_title("Drumsi")
-root.config(background = "#000000")
+root.config(background = "gray")
 
 #Frames
 topFrame = Frame(root, width=350, height=50)
-topFrame.grid(row=0, column=0, padx=3, pady=3)
+topFrame.grid(row=0, column=0, padx=6, pady=6, sticky="w")
+
+controlFrame = Frame(topFrame, width=350, height=50)
+controlFrame.grid(row=0, column=0, padx=6, pady=6, sticky="w")
+
 
 buttonFrame = Frame(root, width=600, height=50)
-buttonFrame.grid(row=1, column=0, padx=3, pady=3)
+buttonFrame.grid(row=1, column=0, padx=6, pady=6)
+
+mixerFrame = Frame(topFrame, width=350, height=50)
+mixerFrame.grid(row=0, column=1)
 
 
+
+scaleKick = Scale(mixerFrame, from_=10, to=0)
+scaleKick.grid(row=0, column=0, pady=6)
+
+scaleSnare = Scale(mixerFrame, from_=10, to=0)
+scaleSnare.grid(row=0, column=1, pady=6)
+
+scaleHiHat = Scale(mixerFrame, from_=10, to=0)
+scaleHiHat.grid(row=0, column=2, pady=6)
+
+scaleCrash = Scale(mixerFrame, from_=10, to=0)
+scaleCrash.grid(row=0, column=3, pady=6)
 
 
 def changeTempo(event):
@@ -53,9 +77,9 @@ def changeTempo(event):
     tempo = calculateTiming(bpm)
 
 	
-Slider = Scale(topFrame, from_=60, to=200, resolution=5, orient=HORIZONTAL, length=400)
+Slider = Scale(controlFrame, from_=60, to=240, resolution=5, orient=HORIZONTAL, length=200)
 Slider.set(bpm)
-Slider.grid(row=1, column=0, padx=10, pady=3)   
+Slider.grid(row=2, column=0, padx=10, pady=3)   
 Slider.bind('<ButtonRelease-1>', changeTempo)
 
 styleButtonWidth = 1
@@ -109,6 +133,8 @@ def letsGo():
             snare.play()           
         if pattern[2][zaehler] == 1:
             hihat.play()
+        if pattern[3][zaehler] == 1:
+            crash.play()
         root.after(tempo, letsGo)
         zaehler = zaehler+1
         if zaehler >= 16:
@@ -154,7 +180,7 @@ label_list_step = []
 # creating labels
 for i in numberButtons:
     stepLabel = Label(buttonFrame, text=i, bg="gray", width=3)
-    stepLabel.grid(row=0, column=i-1)
+    stepLabel.grid(row=0, column=i-1, padx=3, pady=3)
     label_list_step.append(stepLabel)
 
 #button_names = [1,2,3,4,5,6,7,8]
@@ -202,12 +228,12 @@ def sendNote(receivedNote):
     print("hi",receivedNote)
 
 
-startButton = Button(topFrame, text="Play", bg="#FFFFFF", width=10, command=letsGo)
-startButton.grid(row=0, column=0)
+startButton = Button(controlFrame, text="Play", bg="#FFFFFF", width=6, command=letsGo)
+startButton.grid(row=0, column=0, sticky="w", padx=3, pady=3)
 #startButton.bind('<Button-1>', letsGo)
 
-stopButton = Button(topFrame, text="Stop", bg="#FFFFFF", width=10, command=stopSequencer)
-stopButton.grid(row=1, column=0)
+stopButton = Button(controlFrame, text="Stop", bg="#FFFFFF", width=6, command=stopSequencer)
+stopButton.grid(row=0, column=0, sticky="e", padx=3, pady=3)
 
 
 # Reaktion auf das Programmende
